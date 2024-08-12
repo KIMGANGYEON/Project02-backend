@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import mongoose from "mongoose";
+import userRouter from "./router/userRouter";
 dotenv.config();
 
 const app = express();
@@ -22,6 +23,8 @@ mongoose
 app.get("/", (req, res) => {
   res.send("Hello World!!!!");
 });
+
+app.use("/user", userRouter);
 
 app.listen(port, () => {
   console.log(`🔥app listening on http://localhost:${port}`);
