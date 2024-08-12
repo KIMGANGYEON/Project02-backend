@@ -1,4 +1,5 @@
 import express from "express";
+import session from "express-session";
 import cors from "cors";
 import dotenv from "dotenv";
 import mongoose from "mongoose";
@@ -20,8 +21,16 @@ mongoose
     console.error(error);
   });
 
+app.use(
+  session({
+    secret: process.env.COOKIE_SECRET,
+    resave: false,
+    saveUninitialized: false,
+  })
+);
+
 app.get("/", (req, res) => {
-  res.send("Hello World!!!!");
+  res.send("hello");
 });
 
 app.use("/user", userRouter);

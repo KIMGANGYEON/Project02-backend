@@ -29,6 +29,7 @@ export const postJoin = async (req, res) => {
 
 export const postLogin = async (req, res) => {
   const { email, password } = req.body;
+  const data = req.session;
 
   const user = await User.findOne({ email });
   if (!user) {
@@ -37,8 +38,6 @@ export const postLogin = async (req, res) => {
       .json({ errorMessage: "이메일을 다시 확인해 주세요" });
   }
 
-  console.log(user);
-
   const isMatch = await bcrypt.compare(password, user.password);
   if (!isMatch) {
     return res
@@ -46,6 +45,9 @@ export const postLogin = async (req, res) => {
       .json({ errorMessage: "비밀번호가 일치하지 않습니다" });
   }
   try {
+    req.session.user = user;
+    req.session.isLoggedIn = true;
+    console.log(data);
     return res.sendStatus(201);
   } catch (error) {
     console.error(error);
