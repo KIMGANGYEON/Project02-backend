@@ -2,15 +2,14 @@ import express from "express";
 import session from "express-session";
 import cors from "cors";
 import dotenv from "dotenv";
+import MongoStore from "connect-mongo";
 import mongoose from "mongoose";
 import userRouter from "./router/userRouter";
+import { localsMiddleware } from "./middleware/auth";
 dotenv.config();
 
 const app = express();
 const port = 4000;
-
-app.use(cors());
-app.use(express.json());
 
 mongoose
   .connect(process.env.MONGO_URL)
@@ -22,17 +21,33 @@ mongoose
   });
 
 app.use(
+  cors({
+    origin: "http://localhost:3000",
+    credentials: true,
+  })
+);
+app.use(express.json());
+
+app.use(
   session({
     secret: process.env.COOKIE_SECRET,
     resave: false,
-    saveUninitialized: false,
+    saveUninitialized: true,
+    store: MongoStore.create({
+      mongoUrl: process.env.MONGO_URL,
+      collection: "sessions",
+    }),
+    cookie: {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production", // HTTPS에서만 전송
+      maxAge: 24 * 60 * 60 * 1000, // 쿠키 만료 시간 설정 (24시간)
+    },
   })
 );
 
 app.get("/", (req, res) => {
   res.send("hello");
 });
-
 app.use("/user", userRouter);
 
 app.listen(port, () => {

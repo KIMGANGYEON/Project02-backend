@@ -29,7 +29,6 @@ export const postJoin = async (req, res) => {
 
 export const postLogin = async (req, res) => {
   const { email, password } = req.body;
-  const data = req.session;
 
   const user = await User.findOne({ email });
   if (!user) {
@@ -47,9 +46,15 @@ export const postLogin = async (req, res) => {
   try {
     req.session.user = user;
     req.session.isLoggedIn = true;
-    console.log(data);
+    await req.session.save();
     return res.sendStatus(201);
   } catch (error) {
     console.error(error);
   }
+};
+
+export const postLogout = async (req, res) => {
+  res.clearCookie("connect.sid");
+  req.session.destroy();
+  return res.sendStatus(201);
 };
