@@ -32,15 +32,13 @@ app.use(
   session({
     secret: process.env.COOKIE_SECRET,
     resave: false,
-    saveUninitialized: true,
+    saveUninitialized: false,
     store: MongoStore.create({
       mongoUrl: process.env.MONGO_URL,
       collection: "sessions",
     }),
     cookie: {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production", // HTTPS에서만 전송
-      maxAge: 24 * 60 * 60 * 1000, // 쿠키 만료 시간 설정 (24시간)
     },
   })
 );

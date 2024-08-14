@@ -5,6 +5,8 @@ export const localsMiddleware = (req, res, next) => {
 };
 
 export const Auth = (req, res, next) => {
-  if (!req.session.user)
-    return res.status(401).json({ errorMessage: "인증된 유저가 아님니다" });
+  if (!req.session.user) {
+    return res.status(401).json({ errorMessage: "인증되지 않은 유저입니다" });
+  }
+  next();
 };
