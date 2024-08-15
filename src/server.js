@@ -6,6 +6,7 @@ import MongoStore from "connect-mongo";
 import mongoose from "mongoose";
 import userRouter from "./router/userRouter";
 import { localsMiddleware } from "./middleware/auth";
+import productRouter from "./router/productRouter";
 dotenv.config();
 
 const app = express();
@@ -47,6 +48,7 @@ app.get("/", (req, res) => {
   res.send("hello");
 });
 app.use("/user", userRouter);
+app.use("/product", productRouter);
 
 app.listen(port, () => {
   console.log(`🔥app listening on http://localhost:${port}`);

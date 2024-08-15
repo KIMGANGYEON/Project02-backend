@@ -109,9 +109,7 @@ export const postUserEdit = async (req, res) => {
       .json({ errorMessage: "새로운 비밀번호를 입력해 주세요" });
   }
 
-  const updateUser = await User.findOne({ _id: user._id });
-
-  if (email !== updateUser.email) {
+  if (email !== user.email) {
     const useremailExists = await User.exists({ email });
     if (useremailExists) {
       return res
@@ -119,6 +117,43 @@ export const postUserEdit = async (req, res) => {
         .json({ errorMessage: "해당 이메일은 다른 유저가 사용중 입니다" });
     }
   }
+
+  if (newPassword != +newPassword2) {
+    return res
+      .status(401)
+      .json({ errorMessage: "새로운 비밀번호가 일치하지 않습니다" });
+  }
+  if (oldPassword === newPassword && oldPassword != "") {
+    return res.status(401).json({ errorMessage: "이전 비밀번호랑 동일합니다" });
+  }
+
+  const isMatch = await bcrypt.compare(oldPassword, user.password);
+  if (oldPassword != "") {
+    if (!isMatch) {
+      return res
+        .status(401)
+        .json({ errorMessage: "기존 비밀번호가 일치하지 않습니다" });
+    }
+  }
+
+  let hashedPassword = "";
+  const changePassword = await bcrypt.hash(newPassword, 10);
+  if (oldPassword === "" && newPassword === "" && newPassword2 === "") {
+    hashedPassword = user.password;
+  } else {
+    hashedPassword = changePassword;
+  }
+
+  const updateUser = await User.findByIdAndUpdate(
+    user._id,
+    {
+      name,
+      email,
+      password: hashedPassword,
+    },
+    { new: true }
+  );
+  req.session.user = updateUser;
   try {
     return res.sendStatus(201);
   } catch (error) {
