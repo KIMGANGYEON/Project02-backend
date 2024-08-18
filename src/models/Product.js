@@ -14,7 +14,7 @@ const productSchema = mongoose.Schema({
     default: 0,
   },
   images: {
-    type: Array,
+    type: [String],
     default: [],
   },
   sold: {

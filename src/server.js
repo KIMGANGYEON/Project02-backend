@@ -5,7 +5,7 @@ import dotenv from "dotenv";
 import MongoStore from "connect-mongo";
 import mongoose from "mongoose";
 import userRouter from "./router/userRouter";
-import { localsMiddleware } from "./middleware/auth";
+import path from "path";
 import productRouter from "./router/productRouter";
 dotenv.config();
 
@@ -28,6 +28,7 @@ app.use(
   })
 );
 app.use(express.json());
+app.use(express.static(path.join(__dirname, "../uploads")));
 
 app.use(
   session({

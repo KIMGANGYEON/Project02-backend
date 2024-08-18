@@ -1,6 +1,8 @@
 import bcrypt from "bcrypt";
 import User from "../models/User";
 
+export const getJoin = async (req, res) => {};
+
 export const postJoin = async (req, res) => {
   const { name, email, password, password2 } = req.body;
 
@@ -26,6 +28,8 @@ export const postJoin = async (req, res) => {
     return res.status(500).json({ errorMessage: "서버 에러" });
   }
 };
+
+export const getLogin = async (req, res) => {};
 
 export const postLogin = async (req, res) => {
   const { email, password } = req.body;

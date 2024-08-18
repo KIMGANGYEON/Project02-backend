@@ -10,3 +10,10 @@ export const Auth = (req, res, next) => {
   }
   next();
 };
+
+export const alreadyAuth = (req, res, next) => {
+  if (req.session.user) {
+    return res.status(401).json({ errorMessage: "이미 로그인된 유저 입니다" });
+  }
+  next();
+};
