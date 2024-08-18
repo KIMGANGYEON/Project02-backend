@@ -1,6 +1,8 @@
 import express from "express";
 import {
+  getProductEdit,
   getProductUpload,
+  postProductEdit,
   postProductImage,
   postProductUpload,
 } from "../controller/productController";
@@ -13,6 +15,13 @@ productRouter
   .all(Auth)
   .get(getProductUpload)
   .post(postProductUpload);
+
+productRouter
+  .route("/edit")
+  .all(Auth)
+  .get(getProductEdit)
+  .post(postProductEdit);
+
 productRouter.post("/image", postProductImage);
 
 export default productRouter;

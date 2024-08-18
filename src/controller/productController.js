@@ -43,3 +43,16 @@ export const postProductUpload = async (req, res) => {
     console.error(error);
   }
 };
+
+export const getProductEdit = async (req, res) => {
+  const { user } = req.session;
+  const product = await Product.find().populate("writer");
+  try {
+    console.log(product);
+    return res.status(201).json({ user, product });
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const postProductEdit = async (req, res) => {};
