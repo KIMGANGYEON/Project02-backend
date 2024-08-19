@@ -28,10 +28,12 @@ export const getProductUpload = async (req, res) => {
 };
 
 export const postProductUpload = async (req, res) => {
+  const { user } = req.session;
   const { data, productImages } = req.body;
 
   try {
     const product = new Product({
+      writer: user._id,
       title: data.title,
       description: data.description,
       price: Number(data.price),
@@ -46,9 +48,8 @@ export const postProductUpload = async (req, res) => {
 
 export const getProductEdit = async (req, res) => {
   const { user } = req.session;
-  const product = await Product.find().populate("writer");
+  const product = await Product.find({ writer: user._id }).populate("writer");
   try {
-    console.log(product);
     return res.status(201).json({ user, product });
   } catch (error) {
     console.error(error);
@@ -56,3 +57,15 @@ export const getProductEdit = async (req, res) => {
 };
 
 export const postProductEdit = async (req, res) => {};
+
+export const getProductEditDetail = async (req, res) => {
+  const { id } = req.params;
+  const product = await Product.find({ _id: id });
+  try {
+    return res.status(201).json({ product });
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const postProductEditDetail = async (req, res) => {};

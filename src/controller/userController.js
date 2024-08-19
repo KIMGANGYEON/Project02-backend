@@ -57,6 +57,11 @@ export const postLogin = async (req, res) => {
   }
 };
 
+export const getLogout = async (req, res) => {
+  const { user } = req.session;
+  return res.status(201).json({ user });
+};
+
 export const postLogout = async (req, res) => {
   res.clearCookie("connect.sid", {
     httpOnly: true,

@@ -1,8 +1,10 @@
 import express from "express";
 import {
   getProductEdit,
+  getProductEditDetail,
   getProductUpload,
   postProductEdit,
+  postProductEditDetail,
   postProductImage,
   postProductUpload,
 } from "../controller/productController";
@@ -21,6 +23,12 @@ productRouter
   .all(Auth)
   .get(getProductEdit)
   .post(postProductEdit);
+
+productRouter
+  .route("/edit/detail/:id")
+  .all(Auth)
+  .get(getProductEditDetail)
+  .post(postProductEditDetail);
 
 productRouter.post("/image", postProductImage);
 
