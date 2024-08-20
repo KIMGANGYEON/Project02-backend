@@ -6,6 +6,7 @@ import {
   postProductEdit,
   postProductEditDetail,
   postProductImage,
+  postProductImageDelete,
   postProductUpload,
 } from "../controller/productController";
 import { Auth } from "../middleware/auth";
@@ -30,6 +31,7 @@ productRouter
   .get(getProductEditDetail)
   .post(postProductEditDetail);
 
+productRouter.post("/delete/image", postProductImageDelete);
 productRouter.post("/image", postProductImage);
 
 export default productRouter;

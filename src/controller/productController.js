@@ -1,5 +1,7 @@
 import Product from "../models/Product";
 import multer from "multer";
+import fs from "fs";
+import path from "path";
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -15,10 +17,23 @@ const upload = multer({ storage }).array("file");
 export const postProductImage = async (req, res) => {
   upload(req, res, (err) => {
     if (err) {
-      return req.status(500).send(err);
+      return res.status(500).send(err);
     }
     const fileNames = req.files.map((file) => file.filename);
     return res.json({ fileNames });
+  });
+};
+
+export const postProductImageDelete = async (req, res) => {
+  const { filename } = req.body;
+  console.log(filename);
+
+  const filePath = path.join(__dirname, "../../uploads", filename);
+  fs.unlink(filePath, (err) => {
+    if (err) {
+      return res.status(500).json({ message: "Failed to delete image." });
+    }
+    return res.status(200).json({ message: "Image deleted successfully." });
   });
 };
 
