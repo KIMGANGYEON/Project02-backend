@@ -3,9 +3,23 @@ import multer from "multer";
 import fs from "fs";
 import path from "path";
 
+const clearTempUploads = () => {
+  const tempDir = path.join(__dirname, "../../uploads_temp");
+
+  fs.readdir(tempDir, (err, files) => {
+    if (err) return console.error(err);
+
+    files.forEach((file) => {
+      fs.unlink(path.join(tempDir, file), (err) => {
+        if (err) console.error(err);
+      });
+    });
+  });
+};
+
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, "uploads/");
+    cb(null, "uploads_temp/");
   },
   filename: function (req, file, cb) {
     cb(null, `${Date.now()}_${file.originalname}`);
@@ -26,9 +40,8 @@ export const postProductImage = async (req, res) => {
 
 export const postProductImageDelete = async (req, res) => {
   const { filename } = req.body;
-  console.log(filename);
 
-  const filePath = path.join(__dirname, "../../uploads", filename);
+  const filePath = path.join(__dirname, "../../uploads_temp", filename);
   fs.unlink(filePath, (err) => {
     if (err) {
       return res.status(500).json({ message: "Failed to delete image." });
@@ -41,7 +54,7 @@ export const getProductUpload = async (req, res) => {
   const { user } = req.session;
   return res.status(201).json({ user });
 };
-
+``;
 export const postProductUpload = async (req, res) => {
   const { user } = req.session;
   const { data, productImages } = req.body;
@@ -54,6 +67,14 @@ export const postProductUpload = async (req, res) => {
       price: Number(data.price),
       images: productImages.images,
     });
+
+    productImages.images.forEach((filename) => {
+      const tempPath = path.join(__dirname, "../../uploads_temp", filename);
+      const finalPath = path.join(__dirname, "../../uploads", filename);
+
+      fs.renameSync(tempPath, finalPath);
+    });
+    clearTempUploads();
     await product.save();
     return res.sendStatus(201);
   } catch (error) {
@@ -76,6 +97,15 @@ export const postProductEdit = async (req, res) => {};
 export const getProductEditDetail = async (req, res) => {
   const { id } = req.params;
   const product = await Product.find({ _id: id });
+  const proudctImages = product[0].images;
+
+  proudctImages.forEach((filename) => {
+    const tempPath = path.join(__dirname, "../../uploads_temp", filename);
+    const finalPath = path.join(__dirname, "../../uploads", filename);
+
+    fs.copyFileSync(finalPath, tempPath);
+  });
+
   try {
     return res.status(201).json({ product });
   } catch (error) {
@@ -83,4 +113,32 @@ export const getProductEditDetail = async (req, res) => {
   }
 };
 
-export const postProductEditDetail = async (req, res) => {};
+export const postProductEditDetail = async (req, res) => {
+  const { id } = req.params;
+  const { title, price, description } = req.body.data;
+  const productImages = req.body.productImages;
+  const product = await Product.find({ _id: id });
+  const basicImage = product[0].images;
+
+  try {
+    basicImage.forEach((filename) => {
+      const finalPath = path.join(__dirname, "../../uploads", filename);
+      fs.unlinkSync(finalPath);
+    });
+
+    productImages.forEach((filename) => {
+      const tempPath = path.join(__dirname, "../../uploads_temp", filename);
+      const finalPath = path.join(__dirname, "../../uploads", filename);
+      fs.renameSync(tempPath, finalPath);
+    });
+
+    const updateProduct = await Product.findByIdAndUpdate(
+      id,
+      { title, price, description, images: productImages },
+      { new: true }
+    );
+    return res.sendStatus(201);
+  } catch (error) {
+    console.error(error);
+  }
+};

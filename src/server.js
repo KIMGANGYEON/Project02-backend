@@ -7,6 +7,7 @@ import mongoose from "mongoose";
 import userRouter from "./router/userRouter";
 import path from "path";
 import productRouter from "./router/productRouter";
+
 dotenv.config();
 
 const app = express();
@@ -29,6 +30,8 @@ app.use(
 );
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "../uploads")));
+app.use(express.static(path.join(__dirname, "../edit")));
+app.use(express.static(path.join(__dirname, "../uploads_temp")));
 
 app.use(
   session({
