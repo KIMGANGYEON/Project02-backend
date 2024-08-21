@@ -142,3 +142,9 @@ export const postProductEditDetail = async (req, res) => {
     console.error(error);
   }
 };
+
+export const postProductDelete = async (req, res) => {
+  const { id } = req.params;
+  await Product.findByIdAndDelete(id);
+  return res.sendStatus(201);
+};

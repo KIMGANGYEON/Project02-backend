@@ -3,6 +3,7 @@ import {
   getProductEdit,
   getProductEditDetail,
   getProductUpload,
+  postProductDelete,
   postProductEdit,
   postProductEditDetail,
   postProductImage,
@@ -33,5 +34,7 @@ productRouter
 
 productRouter.post("/delete/image", postProductImageDelete);
 productRouter.post("/image", postProductImage);
+
+productRouter.delete("/delete/:id", postProductDelete);
 
 export default productRouter;
