@@ -15,12 +15,24 @@ const userSchema = mongoose.Schema({
     type: String,
   },
   cart: {
-    type: Array,
-    default: [],
+    new: {
+      type: Array,
+      default: [],
+    },
+    used: {
+      type: Array,
+      default: [],
+    },
   },
   history: {
-    type: Array,
-    default: [],
+    new: {
+      type: Array,
+      default: [],
+    },
+    used: {
+      type: Array,
+      default: [],
+    },
   },
 });
 

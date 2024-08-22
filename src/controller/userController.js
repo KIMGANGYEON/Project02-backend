@@ -169,3 +169,56 @@ export const postUserEdit = async (req, res) => {
     console.error(error);
   }
 };
+
+export const getCart = async (req, res) => {
+  const { user } = req.session;
+  return res.status(201).json({ user });
+};
+
+export const getAddToCart = async (req, res) => {
+  const { user } = req.session;
+  return res.status(201).json({ user });
+};
+
+export const postAddToCart = async (req, res) => {
+  const productId = req.body.id;
+  const userinfo = req.session.user;
+
+  const user = await User.findOne({ _id: userinfo._id });
+  try {
+    let duplicate = false;
+    user.cart.new.forEach((item) => {
+      if (item.id === productId) {
+        duplicate = true;
+      }
+    });
+
+    if (duplicate) {
+      const updateUser = await User.findOneAndUpdate(
+        { _id: user._id, "cart.new.id": productId },
+        { $inc: { "cart.new.$.quantity": 1 } },
+        { new: true }
+      );
+      req.session.user.cart = updateUser;
+    } else {
+      const updateUser = await User.findByIdAndUpdate(
+        { _id: user._id },
+        {
+          $push: {
+            "cart.new": {
+              id: productId,
+              quantity: 1,
+              date: Date.now(),
+            },
+          },
+        },
+        { new: true }
+      );
+      req.session.user.cart = updateUser;
+    }
+
+    return res.status(201).send(user.cart);
+  } catch (error) {
+    console.error(error);
+  }
+};

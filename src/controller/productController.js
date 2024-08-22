@@ -148,3 +148,11 @@ export const postProductDelete = async (req, res) => {
   await Product.findByIdAndDelete(id);
   return res.sendStatus(201);
 };
+
+//USED
+
+export const getUsedProduct = async (req, res) => {
+  const products = await Product.find();
+
+  return res.status(201).json({ products });
+};
