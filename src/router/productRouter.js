@@ -4,6 +4,7 @@ import {
   getProductEditDetail,
   getProductUpload,
   getUsedProduct,
+  getUsedProductDetail,
   postProductDelete,
   postProductEdit,
   postProductEditDetail,

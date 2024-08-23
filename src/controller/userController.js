@@ -1,5 +1,6 @@
 import bcrypt from "bcrypt";
 import User from "../models/User";
+import Product from "../models/Product";
 
 export const getJoin = async (req, res) => {};
 
@@ -222,3 +223,13 @@ export const postAddToCart = async (req, res) => {
     console.error(error);
   }
 };
+
+export const getAddUsedToCart = async (req, res) => {
+  const { id } = req.params;
+  const { user } = req.session;
+  const product = await Product.find({ _id: id });
+
+  return res.status(201).json({ product, user });
+};
+
+export const postAddUsedToCart = async (req, res) => {};
