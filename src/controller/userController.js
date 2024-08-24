@@ -232,4 +232,43 @@ export const getAddUsedToCart = async (req, res) => {
   return res.status(201).json({ product, user });
 };
 
-export const postAddUsedToCart = async (req, res) => {};
+export const postAddUsedToCart = async (req, res) => {
+  const productId = req.body.id;
+  const userinfo = req.session.user;
+
+  const user = await User.findOne({ _id: userinfo._id });
+  try {
+    let dulicate = false;
+    user.cart.used.forEach((item) => {
+      if (item.id === productId) {
+        dulicate = true;
+      }
+    });
+    if (dulicate) {
+      const updateUser = await User.findOneAndUpdate(
+        { _id: user._id, "cart.used.id": productId },
+        { $inc: { "cart.used.$.quantity": 1 } },
+        { new: true }
+      );
+      req.session.user.cart = updateUser;
+    } else {
+      const updateUser = await User.findByIdAndUpdate(
+        { _id: user._id },
+        {
+          $push: {
+            "cart.used": {
+              id: productId,
+              quantity: 1,
+              data: Date.now(),
+            },
+          },
+        },
+        { new: true }
+      );
+      req.session.user.cart = updateUser;
+    }
+    return res.sendStatus(201);
+  } catch (error) {
+    console.error(error);
+  }
+};
