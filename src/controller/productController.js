@@ -156,3 +156,25 @@ export const getUsedProduct = async (req, res) => {
 
   return res.status(201).json({ products });
 };
+
+export const getUsedProductCart = async (req, res) => {
+  try {
+    const cartItems = req.session.user.cart.used;
+
+    const productDetails = await Promise.all(
+      cartItems.map(async (item) => {
+        const product = await Product.findById(item.id);
+
+        return {
+          ...product.toObject(),
+          quantity: item.quantity,
+          data: item.date,
+        };
+      })
+    );
+
+    return res.status(201).json({ productDetails });
+  } catch (error) {
+    console.error(error);
+  }
+};

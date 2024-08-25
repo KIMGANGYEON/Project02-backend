@@ -4,6 +4,7 @@ import {
   getProductEditDetail,
   getProductUpload,
   getUsedProduct,
+  getUsedProductCart,
   getUsedProductDetail,
   postProductDelete,
   postProductEdit,
@@ -40,5 +41,6 @@ productRouter.delete("/delete/:id", postProductDelete);
 
 //USED
 productRouter.route("/used").get(getUsedProduct);
+productRouter.route("/used/cart").get(getUsedProductCart);
 
 export default productRouter;
