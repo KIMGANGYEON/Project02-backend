@@ -159,7 +159,8 @@ export const getUsedProduct = async (req, res) => {
 
 export const getUsedProductCart = async (req, res) => {
   try {
-    const cartItems = req.session.user.cart.used;
+    const cartItems =
+      req.session.user.cart.cart.used || req.session.user.cart.used;
 
     const productDetails = await Promise.all(
       cartItems.map(async (item) => {

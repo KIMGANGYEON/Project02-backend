@@ -12,6 +12,10 @@ import {
   postAddToCart,
   postAddUsedCart,
   postAddUsedToCart,
+  postDeleteNewCart,
+  postDeleteUsedCart,
+  postEditNewCart,
+  postEditUsedCart,
   postJoin,
   postLogin,
   postLogout,
@@ -32,5 +36,11 @@ userRouter
   .route("/add/used/cart/:id")
   .get(getAddUsedToCart)
   .post(postAddUsedToCart);
+
+userRouter.route("/used/cart/edit").post(postEditUsedCart);
+userRouter.route("/new/cart/edit").post(postEditNewCart);
+
+userRouter.route("/used/cart/delete").post(postDeleteUsedCart);
+userRouter.route("/new/cart/delete").post(postDeleteNewCart);
 
 export default userRouter;

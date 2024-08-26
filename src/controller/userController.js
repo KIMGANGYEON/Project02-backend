@@ -272,3 +272,91 @@ export const postAddUsedToCart = async (req, res) => {
     console.error(error);
   }
 };
+
+export const postEditUsedCart = async (req, res) => {
+  const { user } = req.session;
+  const { id, delta } = req.body;
+
+  try {
+    const updateUser = await User.findOneAndUpdate(
+      {
+        _id: user._id,
+        "cart.used.id": id,
+      },
+      {
+        $inc: { "cart.used.$.quantity": delta },
+      },
+      { new: true }
+    );
+    req.session.user.cart = updateUser;
+    return res.sendStatus(201);
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const postEditNewCart = async (req, res) => {
+  const { user } = req.session;
+  const { isbn, delta } = req.body;
+
+  try {
+    const updateUser = await User.findOneAndUpdate(
+      {
+        _id: user._id,
+        "cart.new.id": isbn,
+      },
+      {
+        $inc: { "cart.new.$.quantity": delta },
+      },
+      { new: true }
+    );
+    req.session.user.cart = updateUser;
+    return res.sendStatus(201);
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const postDeleteUsedCart = async (req, res) => {
+  const { user } = req.session;
+  const { id } = req.body;
+  console.log(id);
+
+  try {
+    const updateUser = await User.findOneAndUpdate(
+      {
+        _id: user._id,
+      },
+      {
+        $pull: { "cart.used": { id: id } },
+      },
+      { new: true }
+    );
+    req.session.user.cart = updateUser;
+    return res.sendStatus(201);
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const postDeleteNewCart = async (req, res) => {
+  const { user } = req.session;
+  const { id } = req.body;
+  console.log(id);
+
+  try {
+    const updateUser = await User.findOneAndUpdate(
+      {
+        _id: user._id,
+      },
+      {
+        $pull: { "cart.new": { id: id } },
+      },
+      { new: true }
+    );
+    req.session.user.cart = updateUser;
+    return res.sendStatus(201);
+  } catch (error) {
+    console.error(error);
+  }
+};
